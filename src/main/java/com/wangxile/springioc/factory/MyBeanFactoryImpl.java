@@ -15,12 +15,11 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Modified by:
  */
 public class MyBeanFactoryImpl implements MyBeanFactory{
+
     //存储对象名称和已经实例化的对象映射
     private static ConcurrentHashMap<String, Object> beanMap = new ConcurrentHashMap();
     //存储对象名称和对应对象信息的映射
     private static ConcurrentHashMap<String,BeanDefinition> beanDefineMap= new ConcurrentHashMap();
-    //存储存储在容器中对象的名称
-    private static Set<String> beanNameSet = Collections.synchronizedSet(new HashSet());
 
     @Override
     public Object getBeanByName(String name) throws Exception {
@@ -44,7 +43,7 @@ public class MyBeanFactoryImpl implements MyBeanFactory{
         Field[] declaredFields = bean.getClass().getDeclaredFields();
         for (Field field: declaredFields){
             String filedAllName = field.getType().getName();
-            if (beanNameSet.contains(filedAllName)){
+            if (beanDefineMap.containsKey(filedAllName)){
                 Object findBean = getBeanByName(filedAllName);
                 //为对象中的属性赋值
                 field.setAccessible(true);
@@ -68,10 +67,6 @@ public class MyBeanFactoryImpl implements MyBeanFactory{
 
     public static void setBeanDineMap(ConcurrentHashMap<String,BeanDefinition> beanDefineMap){
         MyBeanFactoryImpl.beanDefineMap = beanDefineMap;
-    }
-
-    public static void setBeanNameSet(Set<String> beanNameSet){
-        MyBeanFactoryImpl.beanNameSet = beanNameSet;
     }
 
 }

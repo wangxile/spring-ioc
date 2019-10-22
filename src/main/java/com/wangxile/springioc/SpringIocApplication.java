@@ -38,7 +38,6 @@ public class SpringIocApplication implements CommandLineRunner {
     @Override
     public void run(String... args){
         ConcurrentHashMap<String,BeanDefinition> concurrentHashMap = new ConcurrentHashMap<>();
-         Set<String> beanNameSet = Collections.synchronizedSet(new HashSet());
         Reflections reflections = new Reflections("com.wangxile");
         //获得项目中所有被MyIoc标记得类
         Set<Class<?>> typesAnnotatedWith = reflections.getTypesAnnotatedWith(MyIoc.class);
@@ -51,11 +50,8 @@ public class SpringIocApplication implements CommandLineRunner {
             beanDefinition.setSuperNames(superclassName);
             beanDefinition.setAlias(getClassName(className));
             concurrentHashMap.put(className, beanDefinition);
-            beanNameSet.add(className);
-
         }
         MyBeanFactoryImpl.setBeanDineMap(concurrentHashMap);
-        MyBeanFactoryImpl.setBeanNameSet(beanNameSet);
     }
 
     private String getClassName(String beanClassName) {
